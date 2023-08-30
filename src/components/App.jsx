@@ -45,7 +45,7 @@ function App() {
           <ImagePopup onClose={() => history.push('/')}/>
         </Route>
         <Route path='*'>
-          {isLoggedIn ? <Redirect to='/gallery' /> : <Redirect to='/sign-in' />}
+          {isLoggedIn ? <Redirect to='/gallery' /> : <Redirect to='/signin' />}
         </Route>
       </Switch>
       <Footer />
