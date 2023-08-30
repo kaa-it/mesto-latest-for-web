@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Route, Link, useRouteMatch, useHistory } from "react-router-dom";
+import {Route, Routes, Link, useResolvedPath, useNavigate} from "react-router-dom";
 
 import { getCurrentUser } from "../store/current-user/selectors";
 import {
@@ -20,9 +20,8 @@ import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 
 function Main() {
-  const history = useHistory();
-  const {url, path} = useRouteMatch();
-
+  const navigate = useNavigate();
+  const url = useResolvedPath("").pathname;
   const [cardForDelete, setCardForDelete] = useState(null);
   const currentUser = useSelector(getCurrentUser);
   const cards = useSelector(getCards);
@@ -45,7 +44,7 @@ function Main() {
   }
 
   function closePopup() {
-    history.push('/gallery');
+    navigate('/gallery');
   }
 
   return (
@@ -90,15 +89,17 @@ function Main() {
           )}
         </section>
       </main>
-      <Route path={`${path}/edit-profile`}>
-        <EditProfilePopup onClose={closePopup}/>
-      </Route>
-      <Route path={`${path}/add-card`}>
-        <AddPlacePopup onClose={closePopup}/>
-      </Route>
-      <Route path={`${path}/edit-profile-avatar`}>
-        <EditAvatarPopup onClose={closePopup}/>
-      </Route>
+      <Routes>
+        <Route path={`/edit-profile`} element={
+          <EditProfilePopup onClose={closePopup}/>
+        } />
+        <Route path={`/add-card`} element={
+          <AddPlacePopup onClose={closePopup}/>
+        } />
+        <Route path={`/edit-profile-avatar`} element={
+          <EditAvatarPopup onClose={closePopup}/>
+        } />
+      </Routes>
       {cardForDelete && <PopupWithForm
         title='Вы уверены?'
         name='remove-card'

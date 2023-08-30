@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import logoPath from "../images/logo.svg";
-import { Route, Link, Switch, useRouteMatch } from "react-router-dom";
+import { Route, Link, Routes, useMatch } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { getUserData } from "../store/auth/selectors";
@@ -15,7 +15,7 @@ function Header() {
   const toggleMenu = () => setMenuOpen(!isMenuOpen);
   const handleSignOut = () => dispatch(signOut());
 
-  const isMain = useRouteMatch({path: "/", exact: true});
+  const isMain = useMatch({path: "/", end: true});
 
   return (
 
@@ -31,32 +31,34 @@ function Header() {
         className='logo header__logo'
       />
       </Link>
-      <Switch>
-        <Route exact path='/gallery'>
-          <button
-            className='header__burger'
-            type='button'
-            aria-label='меню'
-            onClick={toggleMenu}
-          ></button>
-          <div className='header__wrapper'>
-            <p className='header__user'>{email}</p>
-            <button className='header__logout' onClick={handleSignOut}>
-              Выйти
-            </button>
-          </div>
-        </Route>
-        <Route path='/signup'>
+      <Routes>
+        <Route path='/gallery/' element={
+          <>
+            <button
+              className='header__burger'
+              type='button'
+              aria-label='меню'
+              onClick={toggleMenu}
+            ></button>
+            <div className='header__wrapper'>
+              <p className='header__user'>{email}</p>
+              <button className='header__logout' onClick={handleSignOut}>
+                Выйти
+              </button>
+            </div>
+          </>
+        } />
+        <Route path='/signup' element={
           <Link className='header__auth-link' to='signin'>
             Войти
           </Link>
-        </Route>
-        <Route path='/signin'>
+        } />
+        <Route path='/signin' element={
           <Link className='header__auth-link' to='signup'>
             Регистрация
           </Link>
-        </Route>
-      </Switch>
+        } />
+      </Routes>
     </header>
   );
 }

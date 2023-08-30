@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, Redirect, useLocation, useHistory } from "react-router-dom";
+import { Route, Routes, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import Header from "./Header";
@@ -19,7 +19,7 @@ function App() {
   const closeInfoTooltip = () => setTooltipStatus();
   const isLoggedIn = useSelector(getIsAuth);
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   React.useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
@@ -29,36 +29,51 @@ function App() {
   return (
     <div className='page__content'>
       <Header />
-      <Switch location={modal || location}>
-        <ProtectedRoute path='/gallery'>
-          <Main />
-        </ProtectedRoute>
-        <Route path='/signup' exact>
-          {isLoggedIn && <Redirect to='/gallery' />}
-          <Register setTooltip={setTooltipStatus} />
-        </Route>
-        <Route path='/signin' exact>
-          {isLoggedIn && <Redirect to='/gallery' />}
-          <Login setTooltip={setTooltipStatus} />
-        </Route>
-        <Route path='/card/:id'>
-          <ImagePopup onClose={() => history.push('/')}/>
-        </Route>
-        <Route path='*'>
-          {isLoggedIn ? <Redirect to='/gallery' /> : <Redirect to='/signin' />}
-        </Route>
-      </Switch>
+      <Routes location={modal || location}>
+        <Route path="/gallery/*" element={
+          <ProtectedRoute>
+            <Main />
+          </ProtectedRoute>
+        }/>
+        <Route path='/signup' element={
+          <>
+            {isLoggedIn && <Navigate to='/gallery' />}
+            <Register setTooltip={setTooltipStatus} />
+          </>
+        }/>
+        <Route path='/signin' element={
+          <>
+            {isLoggedIn && <Navigate to='/gallery' />}
+            <Login setTooltip={setTooltipStatus} />
+          </>
+        } />
+        <Route path='/card/:id' element={
+          <ImagePopup onClose={() => navigate('/')}/>
+        } />
+        <Route path='*' element={
+          <>
+            {isLoggedIn ? <Navigate to='/gallery' /> : <Navigate to='/signin' />}
+          </>
+        } />
+      </Routes>
       <Footer />
-      <Route path='/(signup|signin)'>
-        {!!tooltipStatus && (<InfoTooltip
-          onClose={closeInfoTooltip}
-          status={tooltipStatus}
-        />)}
-      </Route>
+      <Routes>
+        <Route path='/(signup|signin)' element={
+          <>
+            {!!tooltipStatus && (<InfoTooltip
+                onClose={closeInfoTooltip}
+                status={tooltipStatus}
+            />)}
+          </>
+        } />
+      </Routes>
+
       {modal && (
-        <Route path='/card/:id'>
-          <ImagePopup onClose={() => history.goBack()}/>
-        </Route>
+        <Routes>
+          <Route path='/card/:id' element={
+            <ImagePopup onClose={() => navigate(-1)}/>
+          } />
+        </Routes>
       )}
     </div>
   );

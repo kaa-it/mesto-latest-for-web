@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { login } from "../store/auth/actions";
 import { getLoginSending } from "../store/auth/selectors";
 import { useSelector, useDispatch } from "react-redux";
 import useForm from "../hooks/useForm";
 
 function Login({ setTooltip }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isSenging } = useSelector(getLoginSending);
   const { values, handleChange } = useForm();
@@ -16,7 +16,7 @@ function Login({ setTooltip }) {
     evt.preventDefault();
     dispatch(login(values))
       .then(() => {
-        history.push("/gallery");
+        navigate("/gallery");
       })
       .catch(() => {
         setTooltip({
