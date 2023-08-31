@@ -35,10 +35,8 @@ function Card({ card, onDelete }) {
       <Link
         className='card__image'
         style={{ backgroundImage: `url(${card.link})` }}
-        to={{
-          pathname: `/card/${card._id}`,
-          state: { background: location}
-        }}
+        to={`/card/${card._id}`}
+        state={{ background: location}}
       ></Link>
       <button
         type='button'
