@@ -1,6 +1,16 @@
-import { ActionTypes } from "./actions";
+import { ActionTypes, TAuthActions } from "./actions";
+import { TAuthData } from "../../utils/types";
 
-const initialState = {
+type TAuthInitialState = {
+  data: TAuthData | null;
+  authChecking: boolean;
+  registerSending: false;
+  registerError: string;
+  loginSending: boolean;
+  loginError: string;
+};
+
+const initialState: TAuthInitialState = {
   data: null,
   authChecking: true,
   registerSending: false,
@@ -9,13 +19,16 @@ const initialState = {
   loginError: "",
 };
 
-const reducer = (state = initialState, action) => {
+const reducer = (
+  state = initialState,
+  action: TAuthActions
+): TAuthInitialState => {
   switch (action.type) {
     case ActionTypes.SET_USER_DATA:
       return { ...state, data: action.payload };
     case ActionTypes.SET_AUTH_CHECKING:
       return { ...state, authChecking: action.payload };
-    case ActionTypes.SET_REGESTER_SENDING:
+    case ActionTypes.SET_REGISTER_SENDING:
       return { ...state, registerSending: action.payload };
     case ActionTypes.SET_REGISTER_SEND_ERROR:
       return { ...state, registerError: action.payload };

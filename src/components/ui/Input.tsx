@@ -1,6 +1,10 @@
 import React from "react";
 
-const Input = React.forwardRef(
+type TInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  error?: string;
+};
+
+const Input = React.forwardRef<HTMLInputElement, TInputProps>(
   ({ error = "", value = "", className, ...props }, ref) => {
     return (
       <label className="popup__label">

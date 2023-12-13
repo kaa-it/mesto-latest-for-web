@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { ReactNode, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { getIsCardSending, getCardSendError } from "../store/cards/selectors";
@@ -7,7 +7,14 @@ import PopupWithForm from "./PopupWithForm";
 import useFormWithValidation from "../hooks/useFormWithValidation";
 import Input from "./ui/Input";
 
-function AddPlacePopup({ onClose }) {
+// type TAddPlacePopup = {
+//   onClose: () => void;
+//   children?: ReactNode;
+// };
+
+function AddPlacePopup(
+  { onClose } /*: TAddPlacePopup*/
+) /*: React.JSX.Element*/ {
   const dispatch = useDispatch();
   const isSending = useSelector(getIsCardSending);
   const sendingError = useSelector(getCardSendError);
@@ -18,7 +25,8 @@ function AddPlacePopup({ onClose }) {
     resetFrom();
   }, [resetFrom]);
 
-  const inputRef = useRef(null);
+  const inputRef = useRef(/*<HTMLInputElement | null>*/ null);
+
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -27,6 +35,7 @@ function AddPlacePopup({ onClose }) {
 
   function handleSubmit(evt) {
     evt.preventDefault();
+    // @ts-ignore
     dispatch(addCard(values)).then(() => onClose());
   }
 

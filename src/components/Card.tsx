@@ -5,8 +5,14 @@ import { cardPropTypes } from "../utils/prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { getCurrentUser } from "../store/current-user/selectors";
 import { changeLikeCardStatus } from "../store/cards/actions";
+import { TCardData } from "../utils/types";
 
-function Card({ card, onDelete }) {
+interface ICardProps {
+  card: TCardData;
+  onDelete: (card: TCardData) => void;
+}
+
+function Card({ card, onDelete }: ICardProps): React.JSX.Element {
   const location = useLocation();
 
   const dispatch = useDispatch();
@@ -23,6 +29,7 @@ function Card({ card, onDelete }) {
   }`;
 
   function handleLikeClick() {
+    // @ts-ignore
     dispatch(changeLikeCardStatus(card._id, !isLiked));
   }
 
@@ -31,36 +38,31 @@ function Card({ card, onDelete }) {
   }
 
   return (
-    <li className='places__item card'>
+    <li className="places__item card">
       <Link
-        className='card__image'
+        className="card__image"
         style={{ backgroundImage: `url(${card.link})` }}
         to={`/card/${card._id}`}
-        state={{ background: location}}
+        state={{ background: location }}
       ></Link>
       <button
-        type='button'
+        type="button"
         className={cardDeleteButtonClassName}
         onClick={handleDeleteClick}
       ></button>
-      <div className='card__description'>
-        <h2 className='card__title'>{card.name}</h2>
-        <div className='card__likes'>
+      <div className="card__description">
+        <h2 className="card__title">{card.name}</h2>
+        <div className="card__likes">
           <button
-            type='button'
+            type="button"
             className={cardLikeButtonClassName}
             onClick={handleLikeClick}
           ></button>
-          <p className='card__like-count'>{card.likes.length}</p>
+          <p className="card__like-count">{card.likes.length}</p>
         </div>
       </div>
     </li>
   );
 }
-
-Card.propTypes = {
-  card: cardPropTypes,
-  onDelete: PropTypes.func.isRequired,
-};
 
 export default Card;
