@@ -3,7 +3,7 @@ import reducer from "./reducer";
 import mestoApi from "../utils/mesto-api";
 import * as authApi from "../utils/auth-api";
 import { ThunkAction } from "redux-thunk";
-import { TAuthActions } from "./auth/actions";
+import { TAuthActions } from "./auth/reducer";
 import {
   TypedUseSelectorHook,
   useDispatch as dispatchHook,
@@ -46,3 +46,10 @@ export default store;
 export const useDispatch: <T = void>() => TAppDispatch<T> = dispatchHook;
 
 export const useSelector: TypedUseSelectorHook<TRootState> = selectorHook;
+
+export type TThunkAPI = {
+  extra: {
+    authApi: typeof authApi,
+    mestoApi: typeof mestoApi
+  }
+}
