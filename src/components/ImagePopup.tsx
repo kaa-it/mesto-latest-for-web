@@ -1,15 +1,18 @@
 import React, { useEffect } from "react";
-import PropTypes from 'prop-types';
-import Popup from "./Popup.jsx";
-import { useSelector, useDispatch } from "react-redux";
-import { getCardById, getIsCardsLodaing } from "../store/cards/selectors.js";
+import Popup from "./Popup";
+import { useSelector, useDispatch } from "../store/store";
+import { getCardById, getIsCardsLoading } from "../store/cards/selectors";
 import { useParams } from "react-router";
-import { loadCards } from "../store/cards/actions.js";
+import { loadCards } from "../store/cards/actions";
 
-function ImagePopup({ onClose }) {
+type TImagePopupProps = {
+  onClose: () => void;
+};
+
+function ImagePopup({ onClose }: TImagePopupProps): React.JSX.Element | null {
   const {id} = useParams();
-  const isCardsLoading = useSelector(getIsCardsLodaing);
-  const card = useSelector(store => getCardById(store, id))
+  const isCardsLoading = useSelector(getIsCardsLoading);
+  const card = useSelector(store => getCardById(store, id!))
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -34,14 +37,6 @@ function ImagePopup({ onClose }) {
       <p className='popup__caption'>{card ? card.name : ""}</p>
     </Popup>
   );
-}
-
-ImagePopup.propTypes = {
-  card: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    link: PropTypes.string.isRequired,
-  }),
-  onClose: PropTypes.func.isRequired
 }
 
 export default ImagePopup;

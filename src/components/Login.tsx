@@ -1,18 +1,30 @@
-import React from "react";
-import PropTypes from 'prop-types';
+import React, {SyntheticEvent} from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../store/auth/actions";
 import { getLoginSending } from "../store/auth/selectors";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "../store/store";
 import useForm from "../hooks/useForm";
+import {TMessageData} from "./InfoTooltip";
 
-function Login({ setTooltip }) {
+type TLoginProps = {
+  setTooltip: (message: TMessageData) => void;
+}
+
+type TFormData = {
+  email: string;
+  password: string;
+}
+
+function Login({ setTooltip }: TLoginProps): React.JSX.Element {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { isSenging } = useSelector(getLoginSending);
-  const { values, handleChange } = useForm();
+  const dispatch = useDispatch<Promise<unknown>>();
+  const isSending= useSelector(getLoginSending);
+  const { values, handleChange } = useForm<TFormData>({
+    email: "",
+    password: ""
+  });
 
-  function handleSubmit(evt) {
+  function handleSubmit(evt: SyntheticEvent) {
     evt.preventDefault();
     dispatch(login(values))
       .then(() => {
@@ -59,17 +71,13 @@ function Login({ setTooltip }) {
         <button
           className='auth-form__button'
           type='submit'
-          disabled={isSenging}
+          disabled={isSending}
         >
-          {isSenging ? "Вход..." : "Войти"}
+          {isSending ? "Вход..." : "Войти"}
         </button>
       </form>
     </div>
   );
-}
-
-Login.propTypes = {
-  setTooltip: PropTypes.func.isRequired
 }
 
 export default Login;

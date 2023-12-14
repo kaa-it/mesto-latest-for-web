@@ -12,8 +12,10 @@ import {
 
 // !!!!!!! ОЧЕНЬ ВАЖНО НЕ ЗАБЫТЬ ПРИ ТИПИЗАЦИИ ХУКОВ
 import type {} from "redux-thunk/extend-redux";
+import {TUserActions} from "./current-user/actions";
+import {TCardActions} from "./cards/actions";
 
-type TRootState = ReturnType<typeof reducer>;
+export type TRootState = ReturnType<typeof reducer>;
 
 const store = configureStore({
   reducer,
@@ -26,7 +28,7 @@ const store = configureStore({
   },
 });
 
-export type TAppActions = TAuthActions;
+export type TAppActions = TAuthActions | TUserActions | TCardActions;
 
 export type TAppThunk<TReturnType = void> = ThunkAction<
   TReturnType,
@@ -41,6 +43,6 @@ type TAppDispatch<TReturnType = void> = (
 
 export default store;
 
-export const useDispatch: () => TAppDispatch = dispatchHook;
+export const useDispatch: <T = void>() => TAppDispatch<T> = dispatchHook;
 
 export const useSelector: TypedUseSelectorHook<TRootState> = selectorHook;

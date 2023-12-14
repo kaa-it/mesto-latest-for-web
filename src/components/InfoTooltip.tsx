@@ -1,6 +1,5 @@
 import React, { ReactNode } from "react";
-import PropTypes from "prop-types";
-import Popup from "./Popup.jsx";
+import Popup from "./Popup";
 import SuccessIcon from "../images/success-icon.svg";
 import ErrorIcon from "../images/error-icon.svg";
 import { JSX } from "react/jsx-runtime";

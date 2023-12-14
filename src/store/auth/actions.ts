@@ -6,18 +6,18 @@ export const name = "auth";
 export const ActionTypes = {
   SET_USER_DATA: `${name}/SET_DATA`,
   SET_AUTH_CHECKING: `${name}/SET_AUTH_CHECKING`,
-  SET_REGISTER_SENDING: `${name}/SET_REGESTER_SENDING`,
-  SET_REGISTER_SEND_ERROR: `${name}/SET_REGESTER_SEND_ERROR`,
+  SET_REGISTER_SENDING: `${name}/SET_REGISTER_SENDING`,
+  SET_REGISTER_SEND_ERROR: `${name}/SET_REGISTER_SEND_ERROR`,
   SET_LOGIN_SENDING: `${name}/SET_LOGIN_SENDING`,
   SET_LOGIN_SEND_ERROR: `${name}/SET_LOGIN_SEND_ERROR`,
-};
+} as const;
 
-type TSetUserDataAction = {
+type TSetAuthDataAction = {
   type: typeof ActionTypes.SET_USER_DATA;
   payload: TAuthData | null;
 };
 
-type TSetAuthChecking = {
+type TSetAuthCheckingAction = {
   type: typeof ActionTypes.SET_AUTH_CHECKING;
   payload: boolean;
 };
@@ -43,19 +43,19 @@ type TSetLoginSendErrorAction = {
 };
 
 export type TAuthActions =
-  | TSetUserDataAction
-  | TSetAuthChecking
+  | TSetAuthDataAction
+  | TSetAuthCheckingAction
   | TSetRegisterSendingAction
   | TSetRegisterSendErrorAction
   | TSetLoginSendingAction
   | TSetLoginSendErrorAction;
 
-export const setUserData = (data: TAuthData | null): TSetUserDataAction => ({
+export const setUserData = (data: TAuthData | null): TSetAuthDataAction => ({
   type: ActionTypes.SET_USER_DATA,
   payload: data,
 });
 
-export const setAuthChecking = (isChecking: boolean): TSetAuthChecking => ({
+export const setAuthChecking = (isChecking: boolean): TSetAuthCheckingAction => ({
   type: ActionTypes.SET_AUTH_CHECKING,
   payload: isChecking,
 });
@@ -87,7 +87,7 @@ export const setLoginSendError = (error: string): TSetLoginSendErrorAction => ({
 });
 
 export const register =
-  ({ email, password }: Required<TAuthData>): TAppThunk =>
+  ({ email, password }: Required<TAuthData>): TAppThunk<Promise<unknown>> =>
   (dispatch, _getState, { authApi }) => {
     dispatch(setRegisterSending(true));
     dispatch(setRegisterSendError(""));
@@ -101,7 +101,7 @@ export const register =
   };
 
 export const login =
-  ({ email, password }: Required<TAuthData>): TAppThunk =>
+  ({ email, password }: Required<TAuthData>): TAppThunk<Promise<unknown>> =>
   (dispatch, _getState, { authApi }) => {
     dispatch(setLoginSending(true));
     dispatch(setLoginSendError(""));

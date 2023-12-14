@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from "react";
-import { useSelector, useDispatch } from "react-redux";
-import {Route, Routes, Link, useResolvedPath, useNavigate} from "react-router-dom";
+import React, {useState, useEffect, SyntheticEvent} from "react";
+import { useSelector, useDispatch } from "../store/store";
+import {Route, Routes, Link, useNavigate, useResolvedPath } from "react-router-dom";
 
 import { getCurrentUser } from "../store/current-user/selectors";
 import {
   getCards,
-  getIsCardsLodaing,
+  getIsCardsLoading,
   getCardsLoadError,
 } from "../store/cards/selectors";
 
@@ -18,27 +18,31 @@ import PopupWithForm from './PopupWithForm';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
+import {TCardData} from "../utils/types";
 
 function Main() {
   const navigate = useNavigate();
   const url = useResolvedPath("").pathname;
-  const [cardForDelete, setCardForDelete] = useState(null);
+  const [cardForDelete, setCardForDelete] = useState<TCardData | null>(null);
   const currentUser = useSelector(getCurrentUser);
   const cards = useSelector(getCards);
-  const isCardsLoading = useSelector(getIsCardsLodaing);
+  const isCardsLoading = useSelector(getIsCardsLoading);
   const isCardsError = useSelector(getCardsLoadError);
 
   const dispatch = useDispatch();
-  const handleCardDeleteRequest = (card) => setCardForDelete(card);
+  const dispatchWithPromise = useDispatch<Promise<unknown>>();
+
+  const handleCardDeleteRequest = (card: TCardData) => setCardForDelete(card);
 
   useEffect(() => {
     dispatch(loadCards());
     dispatch(loadUserInfo());
   },[dispatch])
 
-  const handleCardDelete = (evt) => {
+  const handleCardDelete = (evt: SyntheticEvent) => {
     evt.preventDefault();
-    dispatch(deleteCard(cardForDelete._id))
+    if (!cardForDelete) return;
+    dispatchWithPromise(deleteCard(cardForDelete._id))
       .catch(() => console.log('delete error'))
       .finally(() => setCardForDelete(null));
   }
@@ -54,16 +58,16 @@ function Main() {
           <Link
             className='profile__image'
             to={`${url}/edit-profile-avatar`}
-            style={{ backgroundImage: `url(${currentUser.avatar})`}}
+            style={{ backgroundImage: `url(${currentUser?.avatar})`}}
           ></Link>
           <div className='profile__info'>
-            <h1 className='profile__title'>{currentUser.name}</h1>
+            <h1 className='profile__title'>{currentUser?.name}</h1>
             <Link
               className='profile__edit-button'
               type='button'
               to={`${url}/edit-profile`}
               ></Link>
-            <p className='profile__description'>{currentUser.about}</p>
+            <p className='profile__description'>{currentUser?.about}</p>
           </div>
           <Link
             className='profile__add-button'

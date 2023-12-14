@@ -1,7 +1,8 @@
 import {AUTH_SERVER_URL} from './constants';
 import {getResponse} from './utils';
+import {TAuthData, TAuthToken} from "./types";
 
-export const register = (email, password) => {
+export const register = (email: string, password: string): Promise<TAuthData> => {
   return fetch(`${AUTH_SERVER_URL}/signup`, {
     method: 'POST',
     headers: {
@@ -10,10 +11,10 @@ export const register = (email, password) => {
     },
     body: JSON.stringify({email, password})
   })
-  .then(getResponse)
+  .then(getResponse<TAuthData>)
 };
 
-export const login = (email, password) => {
+export const login = (email: string, password: string): Promise<TAuthToken> => {
   return fetch(`${AUTH_SERVER_URL}/signin`, {
     method: 'POST',
     headers: {
@@ -22,10 +23,10 @@ export const login = (email, password) => {
     },
     body: JSON.stringify({email, password})
   })
-  .then(getResponse)
+  .then(getResponse<TAuthToken>)
 };
 
-export const checkToken = (token) => {
+export const checkToken = (token: string): Promise<{data: TAuthData}> => {
   return fetch(`${AUTH_SERVER_URL}/users/me`, {
     method: 'GET',
     headers: {
@@ -34,5 +35,5 @@ export const checkToken = (token) => {
       'Authorization': `Bearer ${token}`,
     }
   })
-  .then(getResponse)
+  .then(getResponse<{data: TAuthData}>)
 }

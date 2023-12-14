@@ -19,3 +19,7 @@ export type TAuthData = {
   email: string;
   password?: string;
 };
+
+export type TAuthToken = {
+  token: string
+}

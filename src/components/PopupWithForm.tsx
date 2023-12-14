@@ -1,6 +1,15 @@
 import React from "react";
-import PropTypes from 'prop-types';
 import Popup from "./Popup";
+
+type TPopupWithFormProps = {
+  title: string;
+  name: string;
+  onClose: () => void;
+  children?: React.ReactNode;
+  onSubmit: (evt: React.SyntheticEvent) => void;
+  buttonText?: string;
+  isDisabled?: boolean;
+};
 
 function PopupWithForm({
   title,
@@ -10,7 +19,7 @@ function PopupWithForm({
   onSubmit,
   buttonText = "Сохранить",
   isDisabled = false,
-}) {
+}: TPopupWithFormProps): React.JSX.Element {
   return (
     <Popup onClose={onClose}>
       <form className='popup__form' name={name} noValidate onSubmit={onSubmit}>
@@ -33,16 +42,6 @@ function PopupWithForm({
       </form>
     </Popup>
   );
-}
-
-PopupWithForm.propTypes = {
-  title: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
-  children: PropTypes.node,
-  onSubmit: PropTypes.func.isRequired,
-  buttonText: PropTypes.string,
-  isDisabled: PropTypes.bool,
 }
 
 export default PopupWithForm;

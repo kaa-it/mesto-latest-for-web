@@ -6,7 +6,7 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "../store/store"
 
 import Header from "./Header";
 import Main from "./Main";
@@ -30,7 +30,6 @@ function App() {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    // @ts-ignore
     dispatch(checkAuth());
   }, [dispatch]);
 

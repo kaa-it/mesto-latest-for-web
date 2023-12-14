@@ -1,12 +1,18 @@
-import React from "react";
+import React, {SyntheticEvent} from "react";
 import ReactDOM from "react-dom";
-import PropTypes from 'prop-types';
 
 const modalRoot = document.getElementById("modals");
 
-function Popup({ onClose, children, popupClass="", contentClass="" }) {
+type TPopupProps = {
+  onClose: () => void;
+  children: React.ReactNode;
+  popupClass?: string;
+  contentClass?: string;
+};
+
+function Popup({ onClose, children, popupClass="", contentClass="" }: TPopupProps): React.JSX.Element {
   React.useEffect(() => {
-    const handleEscapeClose = (event) => {
+    const handleEscapeClose = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
       }
@@ -17,7 +23,7 @@ function Popup({ onClose, children, popupClass="", contentClass="" }) {
     };
   }, [onClose]);
 
-  const handleOverlayClose = (event) => {
+  const handleOverlayClose = (event: SyntheticEvent) => {
     if (event.target === event.currentTarget) {
       onClose();
     }
@@ -37,15 +43,8 @@ function Popup({ onClose, children, popupClass="", contentClass="" }) {
         {children}
       </div>
     </div>,
-    modalRoot
+    modalRoot!
   );
-}
-
-Popup.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  children: PropTypes.node.isRequired,
-  popupClass: PropTypes.string,
-  contentClass: PropTypes.string,
 }
 
 export default Popup;

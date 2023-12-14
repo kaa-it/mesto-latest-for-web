@@ -1,13 +1,16 @@
 import React from 'react';
 import { Navigate } from "react-router-dom";
-import PropTypes from 'prop-types';
 import Preloader from './Preloader';
 import { useSelector } from "react-redux";
 
 import { getIsAuth, getIsAuthChecking } from "../store/auth/selectors";
 
+type TProtectedRouteProps = {
+  children: React.ReactNode
+}
 
-const ProtectedRoute = ({children}) => {
+
+const ProtectedRoute = ({children}: TProtectedRouteProps): React.JSX.Element => {
   const isLoggedIn = useSelector(getIsAuth);
   const isChecking = useSelector(getIsAuthChecking);
 
@@ -22,9 +25,5 @@ const ProtectedRoute = ({children}) => {
       )}
     </>
 )}
-
-ProtectedRoute.propTypes = {
-  children: PropTypes.element.isRequired
-}
 
 export default ProtectedRoute;

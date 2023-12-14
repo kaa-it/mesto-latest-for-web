@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import logoPath from "../images/logo.svg";
 import { Route, Link, Routes, useMatch } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "../store/store";
 
 import { getUserData } from "../store/auth/selectors";
 import { signOut } from "../store/auth/actions";
 
-function Header() {
+function Header(): React.JSX.Element {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
   const dispatch = useDispatch();

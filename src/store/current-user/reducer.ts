@@ -1,7 +1,18 @@
-import { ActionTypes } from "./actions";
+import {ActionTypes, TUserActions} from "./actions";
+import {TUserData} from "../../utils/types";
 
-const initialState = {
-  data: {},
+type TUserInitialState = {
+  data: TUserData | null,
+  dataLoading: boolean,
+  loadError: string,
+  infoSending: boolean,
+  infoSendError: string,
+  avatarSending: boolean,
+  avatarSendError: string
+}
+
+const initialState: TUserInitialState = {
+  data: null,
   dataLoading: false,
   loadError: "",
   infoSending: false,
@@ -10,11 +21,11 @@ const initialState = {
   avatarSendError: "",
 };
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action: TUserActions): TUserInitialState => {
   switch (action.type) {
     case ActionTypes.SET_DATA:
       return { ...state, data: action.payload };
-    case ActionTypes.SET_DATA_LOADIN:
+    case ActionTypes.SET_DATA_LOADING:
       return { ...state, dataLoading: action.payload };
     case ActionTypes.SET_DATA_LOAD_ERROR:
       return { ...state, loadError: action.payload };

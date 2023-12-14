@@ -1,6 +1,15 @@
-import { ActionTypes } from "./actions";
+import {ActionTypes, TCardActions} from "./actions";
+import {TCardData} from "../../utils/types";
 
-const initialState = {
+type TCardInitialState = {
+  data: Array<TCardData>,
+  loading: boolean,
+  loadError: string,
+  isSending: boolean,
+  sendError: string
+}
+
+const initialState: TCardInitialState = {
   data: [],
   loading: false,
   loadError: "",
@@ -8,11 +17,11 @@ const initialState = {
   sendError: "",
 };
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action: TCardActions): TCardInitialState  => {
   switch (action.type) {
     case ActionTypes.SET_DATA:
       return { ...state, data: action.payload };
-    case ActionTypes.SET_DATA_LOADIN:
+    case ActionTypes.SET_DATA_LOADING:
       return { ...state, loading: action.payload };
     case ActionTypes.SET_DATA_LOAD_ERROR:
       return { ...state, loadError: action.payload };

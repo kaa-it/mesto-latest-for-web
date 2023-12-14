@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import PropTypes from "prop-types";
-import { useSelector, useDispatch } from "react-redux";
+import React, {SyntheticEvent, useEffect, useRef} from "react";
+import { useSelector, useDispatch } from "../store/store";
 import PopupWithForm from "./PopupWithForm";
 
 import {
@@ -13,28 +12,37 @@ import { sendAvatar } from "../store/current-user/actions";
 import useFormWithValidation from "../hooks/useFormWithValidation";
 import Input from "./ui/Input";
 
-function EditAvatarPopup({ onClose }) {
-  const dispatch = useDispatch();
+type TEditAvatarPopupProps = {
+  onClose: () => void;
+};
+
+type TAvatarFormData = {
+  avatar: string;
+}
+
+function EditAvatarPopup({ onClose }: TEditAvatarPopupProps): React.JSX.Element {
+  const dispatch = useDispatch<Promise<unknown>>();
   const currentUser = useSelector(getCurrentUser);
   const isSending = useSelector(getIsAvatarSending);
   const sendingError = useSelector(getIsAvatarSendError);
-  const { values, handleChange, resetFrom, errors, isValid } =
-    useFormWithValidation();
+  const { values, handleChange, resetForm, errors, isValid } =
+    useFormWithValidation<TAvatarFormData>({avatar: ""});
 
   useEffect(() => {
     if (currentUser) {
-      resetFrom(currentUser, {}, false);
+      resetForm(currentUser, {avatar: ""}, false);
     }
-  }, [currentUser, resetFrom]);
+  }, [currentUser, resetForm]);
 
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, []);
   
-  function handleSubmit(evt) {
+  function handleSubmit(evt: SyntheticEvent) {
     evt.preventDefault();
     dispatch(sendAvatar(values)).then(() => onClose());
   }
@@ -65,9 +73,5 @@ function EditAvatarPopup({ onClose }) {
     </PopupWithForm>
   );
 }
-
-EditAvatarPopup.propTypes = {
-  onClose: PropTypes.func.isRequired,
-};
 
 export default EditAvatarPopup;

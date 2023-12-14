@@ -1,19 +1,28 @@
-import React from "react";
-import PropTypes from 'prop-types';
+import React, {SyntheticEvent} from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { register } from "../store/auth/actions";
 import { getRegisterSending } from "../store/auth/selectors";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "../store/store";
 import useForm from "../hooks/useForm";
+import {TMessageData} from "./InfoTooltip";
 
-function Register({ setTooltip }) {
+type TRegisterProps = {
+  setTooltip: (message: TMessageData) => void;
+};
+
+type TFormData = {
+  email: string;
+  password: string;
+};
+
+function Register({ setTooltip }: TRegisterProps) {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { isSenging } = useSelector(getRegisterSending);
-  const { values, handleChange } = useForm();
+  const dispatch = useDispatch<Promise<unknown>>();
+  const isSending = useSelector(getRegisterSending);
+  const { values, handleChange } = useForm<TFormData>({email: "", password: ""});
 
-  function handleSubmit(evt) {
+  function handleSubmit(evt: SyntheticEvent) {
     evt.preventDefault();
     dispatch(register(values))
       .then(() => {
@@ -66,9 +75,9 @@ function Register({ setTooltip }) {
           <button
             className='auth-form__button'
             type='submit'
-            disabled={isSenging}
+            disabled={isSending}
           >
-            {isSenging ? "Регистрация..." : "Зарегистрироваться"}
+            {isSending ? "Регистрация..." : "Зарегистрироваться"}
           </button>
           <p className='auth-form__text'>
             Уже зарегистрированы?{" "}
@@ -80,10 +89,6 @@ function Register({ setTooltip }) {
       </form>
     </div>
   );
-}
-
-Register.propTypes = {
-  setTooltip: PropTypes.func.isRequired
 }
 
 export default Register;

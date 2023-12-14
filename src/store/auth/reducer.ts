@@ -4,7 +4,7 @@ import { TAuthData } from "../../utils/types";
 type TAuthInitialState = {
   data: TAuthData | null;
   authChecking: boolean;
-  registerSending: false;
+  registerSending: boolean;
   registerError: string;
   loginSending: boolean;
   loginError: string;

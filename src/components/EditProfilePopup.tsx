@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import PropTypes from "prop-types";
-import { useSelector, useDispatch } from "react-redux";
+import React, {SyntheticEvent, useEffect, useRef} from "react";
+import { useSelector, useDispatch } from "../store/store";
 import {
   getCurrentUser,
   getIsInfoSending,
@@ -12,28 +11,42 @@ import PopupWithForm from "./PopupWithForm";
 import useFormWithValidation from "../hooks/useFormWithValidation";
 import Input from "./ui/Input";
 
-function EditProfilePopup({ onClose }) {
-  const dispatch = useDispatch();
+type TEditProfilePopupProps = {
+  onClose: () => void;
+};
+
+type TProfileFormData = {
+  name: string;
+  about: string;
+}
+
+function EditProfilePopup({ onClose }: TEditProfilePopupProps): React.JSX.Element {
+  const dispatch = useDispatch<Promise<unknown>>();
   const currentUser = useSelector(getCurrentUser);
   const isSending = useSelector(getIsInfoSending);
   const sendingError = useSelector(getIsInfoSendError);
-  const { values, handleChange, resetFrom, errors, isValid } =
-    useFormWithValidation();
+
+  const { values, handleChange, resetForm, errors, isValid } =
+    useFormWithValidation<TProfileFormData>({
+      name: "",
+      about: ""
+    });
 
   useEffect(() => {
     if (currentUser) {
-      resetFrom(currentUser, {}, true);
+      resetForm(currentUser, {name: "", about: ""}, true);
     }
-  }, [currentUser, resetFrom]);
+  }, [currentUser, resetForm]);
 
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, []);
 
-  function handleSubmit(evt) {
+  function handleSubmit(evt: SyntheticEvent) {
     evt.preventDefault();
     dispatch(sendInfo(values)).then(() => onClose());
   }
@@ -54,8 +67,8 @@ function EditProfilePopup({ onClose }) {
         id="owner-name"
         placeholder="Имя"
         required
-        minLength="2"
-        maxLength="40"
+        minLength={2}
+        maxLength={40}
         pattern="[a-zA-Zа-яА-Я -]{1,}"
         value={values.name}
         error={errors.name}
@@ -67,8 +80,8 @@ function EditProfilePopup({ onClose }) {
         id="owner-description"
         placeholder="Занятие"
         required
-        minLength="2"
-        maxLength="200"
+        minLength={2}
+        maxLength={200}
         value={values.about}
         error={errors.about}
         onChange={handleChange}
@@ -79,9 +92,5 @@ function EditProfilePopup({ onClose }) {
     </PopupWithForm>
   );
 }
-
-EditProfilePopup.propTypes = {
-  onClose: PropTypes.func.isRequired,
-};
 
 export default EditProfilePopup;

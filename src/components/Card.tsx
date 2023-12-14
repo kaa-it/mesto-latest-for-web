@@ -1,35 +1,32 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Link, useLocation } from "react-router-dom";
-import { cardPropTypes } from "../utils/prop-types";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "../store/store";
 import { getCurrentUser } from "../store/current-user/selectors";
 import { changeLikeCardStatus } from "../store/cards/actions";
 import { TCardData } from "../utils/types";
 
-interface ICardProps {
+type TCardProps = {
   card: TCardData;
   onDelete: (card: TCardData) => void;
 }
 
-function Card({ card, onDelete }: ICardProps): React.JSX.Element {
+function Card({ card, onDelete }: TCardProps): React.JSX.Element {
   const location = useLocation();
 
   const dispatch = useDispatch();
   const currentUser = useSelector(getCurrentUser);
 
-  const isLiked = card.likes.some((i) => i._id === currentUser._id);
+  const isLiked = card.likes.some((i) => i._id === currentUser?._id);
   const cardLikeButtonClassName = `card__like-button ${
     isLiked && "card__like-button_is-active"
   }`;
 
-  const isOwn = card.owner._id === currentUser._id;
+  const isOwn = card.owner._id === currentUser?._id;
   const cardDeleteButtonClassName = `card__delete-button ${
     isOwn ? "card__delete-button_visible" : "card__delete-button_hidden"
   }`;
 
   function handleLikeClick() {
-    // @ts-ignore
     dispatch(changeLikeCardStatus(card._id, !isLiked));
   }
 
