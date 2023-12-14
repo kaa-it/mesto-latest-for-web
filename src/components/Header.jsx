@@ -49,12 +49,12 @@ function Header() {
           </>
         } />
         <Route path='/signup' element={
-          <Link className='header__auth-link' to='signin'>
+          <Link className='header__auth-link' to='/signin'>
             Войти
           </Link>
         } />
         <Route path='/signin' element={
-          <Link className='header__auth-link' to='signup'>
+          <Link className='header__auth-link' to='/signup'>
             Регистрация
           </Link>
         } />
