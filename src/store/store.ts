@@ -4,6 +4,8 @@ import mestoApi from "../utils/mesto-api";
 import * as authApi from "../utils/auth-api";
 import { ThunkAction } from "redux-thunk";
 import { TAuthActions } from "./auth/reducer";
+import { TUserActions } from "./current-user/reducer";
+import {TCardActions} from "./cards/actions";
 import {
   TypedUseSelectorHook,
   useDispatch as dispatchHook,
@@ -12,8 +14,6 @@ import {
 
 // !!!!!!! ОЧЕНЬ ВАЖНО НЕ ЗАБЫТЬ ПРИ ТИПИЗАЦИИ ХУКОВ
 import type {} from "redux-thunk/extend-redux";
-import {TUserActions} from "./current-user/actions";
-import {TCardActions} from "./cards/actions";
 
 export type TRootState = ReturnType<typeof reducer>;
 

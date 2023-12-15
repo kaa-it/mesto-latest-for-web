@@ -1,4 +1,4 @@
-import {name} from './actions';
+import {name} from './constants';
 import {TRootState} from "../store";
 
 export const getCurrentUser = (store: TRootState) => store[name].data;

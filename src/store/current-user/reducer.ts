@@ -1,5 +1,7 @@
-import {ActionTypes, TUserActions} from "./actions";
+import {loadData, sendAvatar, sendInfo} from "./actions";
 import {TUserData} from "../../utils/types";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import { name } from "./constants";
 
 type TUserInitialState = {
   data: TUserData | null,
@@ -21,25 +23,60 @@ const initialState: TUserInitialState = {
   avatarSendError: "",
 };
 
-const reducer = (state = initialState, action: TUserActions): TUserInitialState => {
-  switch (action.type) {
-    case ActionTypes.SET_DATA:
-      return { ...state, data: action.payload };
-    case ActionTypes.SET_DATA_LOADING:
-      return { ...state, dataLoading: action.payload };
-    case ActionTypes.SET_DATA_LOAD_ERROR:
-      return { ...state, loadError: action.payload };
-    case ActionTypes.SET_INFO_SENDING:
-      return { ...state, infoSending: action.payload };
-    case ActionTypes.SET_INFO_SEND_ERROR:
-      return { ...state, infoSendError: action.payload };
-    case ActionTypes.SET_AVATAR_SENDING:
-      return { ...state, avatarSending: action.payload };
-    case ActionTypes.SET_AVATAR_SEND_ERROR:
-      return { ...state, avatarSendError: action.payload };
-    default:
-      return state;
-  }
-};
+const currentUserSlice = createSlice({
+  name,
+  initialState,
+  reducers: {
+    setData(state, action: PayloadAction<TUserData>) {
+      state.data = action.payload;
+    }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(loadData.pending, (state) => {
+      state.dataLoading = true;
+      state.loadError = "";
+    });
+    builder.addCase(loadData.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.dataLoading = false;
+    });
+    builder.addCase(loadData.rejected, (state, action) => {
+      state.dataLoading = false;
+      state.loadError = action.error.message || "Ошибка при получении данных пользователя";
+    });
 
-export default reducer;
+    builder.addCase(sendInfo.pending, (state) => {
+      state.infoSending = true;
+      state.infoSendError = "";
+    });
+    builder.addCase(sendInfo.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.infoSending = false;
+    });
+    builder.addCase(sendInfo.rejected, (state, action) => {
+      state.infoSending = false;
+      state.infoSendError = action.error.message || "Ошибка при обновлении данных пользователя";
+    });
+
+    builder.addCase(sendAvatar.pending, (state) => {
+      state.avatarSending = true;
+      state.avatarSendError = "";
+    });
+    builder.addCase(sendAvatar.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.avatarSending = false;
+    });
+    builder.addCase(sendAvatar.rejected, (state, action) => {
+      state.avatarSending = false;
+      state.avatarSendError = action.error.message || "Ошибка при установке аватара пользователя";
+    });
+  }
+})
+
+export const { setData } = currentUserSlice.actions;
+
+export default currentUserSlice.reducer;
+
+type TUserActionCreators = typeof currentUserSlice.actions
+
+export type TUserActions = ReturnType<TUserActionCreators[keyof TUserActionCreators]>;
