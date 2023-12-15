@@ -5,7 +5,6 @@ import * as authApi from "../utils/auth-api";
 import { ThunkAction } from "redux-thunk";
 import { TAuthActions } from "./auth/reducer";
 import { TUserActions } from "./current-user/reducer";
-import {TCardActions} from "./cards/actions";
 import {
   TypedUseSelectorHook,
   useDispatch as dispatchHook,
@@ -28,7 +27,7 @@ const store = configureStore({
   },
 });
 
-export type TAppActions = TAuthActions | TUserActions | TCardActions;
+export type TAppActions = TAuthActions | TUserActions;
 
 export type TAppThunk<TReturnType = void> = ThunkAction<
   TReturnType,

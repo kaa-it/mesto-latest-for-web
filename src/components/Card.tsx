@@ -27,7 +27,7 @@ function Card({ card, onDelete }: TCardProps): React.JSX.Element {
   }`;
 
   function handleLikeClick() {
-    dispatch(changeLikeCardStatus(card._id, !isLiked));
+    dispatch(changeLikeCardStatus({id: card._id, like: !isLiked}));
   }
 
   function handleDeleteClick() {

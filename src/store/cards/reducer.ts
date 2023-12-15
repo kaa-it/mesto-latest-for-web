@@ -1,5 +1,7 @@
-import {ActionTypes, TCardActions} from "./actions";
+import {addCard, changeLikeCardStatus, deleteCard, loadCards} from "./actions";
 import {TCardData} from "../../utils/types";
+import { name } from "./constants";
+import {createSlice} from "@reduxjs/toolkit";
 
 type TCardInitialState = {
   data: Array<TCardData>,
@@ -17,35 +19,50 @@ const initialState: TCardInitialState = {
   sendError: "",
 };
 
-const reducer = (state = initialState, action: TCardActions): TCardInitialState  => {
-  switch (action.type) {
-    case ActionTypes.SET_DATA:
-      return { ...state, data: action.payload };
-    case ActionTypes.SET_DATA_LOADING:
-      return { ...state, loading: action.payload };
-    case ActionTypes.SET_DATA_LOAD_ERROR:
-      return { ...state, loadError: action.payload };
-    case ActionTypes.ADD:
-      return { ...state, data: [action.payload, ...state.data] };
-    case ActionTypes.SET_ADD_SENDING:
-      return { ...state, isSending: action.payload };
-    case ActionTypes.SET_ADD_SEND_ERROR:
-      return { ...state, sendError: action.payload };
-    case ActionTypes.DELETE:
-      return {
-        ...state,
-        data: state.data.filter((c) => c._id !== action.payload),
-      };
-    case ActionTypes.UPDATE:
-      return {
-        ...state,
-        data: state.data.map((c) =>
-          c._id === action.payload.id ? action.payload.data : c
-        ),
-      };
-    default:
-      return state;
-  }
-};
+const cardSlice = createSlice({
+  name,
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
 
-export default reducer;
+    builder.addCase(loadCards.pending, (state) => {
+      state.loading = true;
+      state.loadError = "";
+    });
+    builder.addCase(loadCards.fulfilled, (state, action) => {
+      state.data = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(loadCards.rejected, (state, action) => {
+      state.loading = false;
+      state.loadError = action.error.message || "Ошибка при загрузке карточек";
+    });
+
+    builder.addCase(addCard.pending, (state, action) => {
+      state.isSending = true;
+      state.sendError = "";
+    });
+
+    builder.addCase(addCard.fulfilled, (state, action) => {
+      state.data.unshift(action.payload);
+      state.isSending = false;
+    });
+
+    builder.addCase(addCard.rejected, (state, action) => {
+      state.isSending = false;
+      state.sendError = action.error.message || "Ошибка при добавлении карточки";
+    });
+
+    builder.addCase(deleteCard.fulfilled, (state, action) => {
+      state.data = state.data.filter((c) => c._id !== action.payload);
+    });
+
+    builder.addCase(changeLikeCardStatus.fulfilled, (state, action) => {
+      state.data = state.data.map((c) => {
+        return c._id === action.payload._id ? action.payload : c
+      });
+    });
+  },
+})
+
+export default cardSlice.reducer;
